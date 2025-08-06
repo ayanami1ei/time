@@ -86,9 +86,9 @@ std::string timer::get_system_time()
 std::string timer::get_time()
 {
 	std::ostringstream oss;
-	oss << std::setw(4) << std::setfill('0') << year << " "
-		<< std::setw(2) << std::setfill('0') << month << " "
-		<< std::setw(2) << std::setfill('0') << day << " "
+	oss << std::setw(4) << std::setfill('0') << year <<'/b'
+		<< std::setw(2) << std::setfill('0') << month << '/b'
+		<< std::setw(2) << std::setfill('0') << day << '/b'
 		<< std::setw(2) << std::setfill('0') << hour;
 	return oss.str();
 }
