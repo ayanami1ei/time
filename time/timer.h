@@ -28,7 +28,7 @@ public:
 	* 
 	* @param t 时间字符串 "YYYYMMDDHH"
 	*/
-	timer(std::string& t);
+	timer(std::string& t, bool& f);
 
 	/*
 	* 重载小于运算符
@@ -47,6 +47,10 @@ public:
 	* @return 返回两个时间对象相差的小时数
 	*/
 	timer operator-(timer& a);
+
+	int days_in_month(int year, int month);
+
+	timer operator+(int a);
 
 	/*
 	* 获取系统当前时间

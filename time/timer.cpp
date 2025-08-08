@@ -22,8 +22,17 @@ timer::timer()
 	ss >> year >> month >> day >> hour;
 }
 
-timer::timer(std::string& t)
+timer::timer(std::string& t,bool& f)
 {
+	for (int i = 0; i < t.size(); i++)
+	{
+		if (!(t[i] <= '9' && t[i] >= '0'))
+		{
+			f = false;
+			return;
+		}
+	}
+
 	counting_time = false;
 	if (t.find(' ') != std::string::npos)
 	{
@@ -37,6 +46,7 @@ timer::timer(std::string& t)
 		day = stoi(t.substr(6, 2));
 		hour = stoi(t.substr(8, 2));
 	}
+	f = true;
 }
 
 bool timer::operator<(timer& a)
@@ -85,12 +95,28 @@ std::string timer::get_system_time()
 
 std::string timer::get_time()
 {
-	std::ostringstream oss;
+	/*std::ostringstream oss;
 	oss << std::setw(4) << std::setfill('0') << year <<'/b'
 		<< std::setw(2) << std::setfill('0') << month << '/b'
 		<< std::setw(2) << std::setfill('0') << day << '/b'
 		<< std::setw(2) << std::setfill('0') << hour;
-	return oss.str();
+	return oss.str();*/
+
+	std::string s;
+	if (year / 1000 >= 10 || year / 1000 == 0)
+		return "0000000000"; // 年份不合法
+	else
+		s += std::to_string(year);
+	if (month < 10) s += '0';
+	s += std::to_string(month);
+	if (day < 10) s += '0';
+	s += std::to_string(day);
+	if (hour < 10) s += '0';
+	s += std::to_string(hour);
+
+	std::cout << "当前时间：" << s << std::endl;
+
+	return s;
 }
 
 void timer::program_run_time_count()
@@ -130,4 +156,43 @@ timer::~timer()
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 		std::cout << "\n耗时：" << duration.count() << " 毫秒" << std::endl;
 	}
+}
+
+int timer::days_in_month(int year, int month)
+{
+	static const int days[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+	if (month == 2)
+	{
+		// 闰年判断
+		if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
+			return 29;
+	}
+	return days[month - 1];
+}
+
+timer timer::operator+(int a)
+{
+	timer result = *this;
+
+	result.hour += a;
+
+	while (result.hour >= 24)
+	{
+		result.hour -= 24;
+		result.day += 1;
+
+		int days_this_month = days_in_month(result.year, result.month);
+		if (result.day > days_this_month)
+		{
+			result.day = 1;
+			result.month += 1;
+			if (result.month > 12)
+			{
+				result.month = 1;
+				result.year += 1;
+			}
+		}
+	}
+	return result;
+
 }
